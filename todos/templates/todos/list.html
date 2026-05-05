@@ -52,6 +52,7 @@
       border: 1px solid #cbd5e1;
       border-radius: 10px;
       background: #f8fafc;
+      font: inherit;
     }
 
     form button {
@@ -119,13 +120,19 @@
       <main class="content">
         <h1>To-Do List</h1>
 
+        <p style="margin: 0 0 20px; text-align:center; color:#334155;">
+          Logged in as <strong>{{ request.user.username }}</strong>
+          • <a href="{% url 'logout' %}?next={% url 'todo-list' %}">Logout</a>
+        </p>
+
         <!-- CREATE form -->
         <form method="POST" action="{% url 'todo-create' %}">
-          {% csrf_token %} {{ form.title }}
+          {% csrf_token %}
+          {{ form.title }}
           <button type="submit">Add</button>
         </form>
 
-    <!-- READ list -->
+        <!-- READ list -->
     <ul>
       {% for todo in todos %}
       <li>

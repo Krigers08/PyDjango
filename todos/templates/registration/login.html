@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Login</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #dce8f3;
+        font-family: system-ui, sans-serif;
+        color: #111;
+      }
+
+      .login-card {
+        width: min(420px, 100%);
+        background: #fff;
+        padding: 32px;
+        border-radius: 18px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+      }
+
+      h1 {
+        margin-top: 0;
+        margin-bottom: 24px;
+        font-size: 1.9rem;
+        text-align: center;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 16px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .error {
+        color: #b91c1c;
+        background: #fbe4e6;
+        padding: 12px 14px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="login-card">
+      <h1>Log in</h1>
+      {% if form.errors %}
+      <div class="error">Please enter a valid username and password.</div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <label>
+          Username
+          <input type="text" name="username" required autofocus />
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" required />
+        </label>
+        <button type="submit">Login</button>
+      </form>
+      <p style="margin-top: 18px; text-align: center; color: #475569">
+        Don't have an account? <a href="{% url 'register' %}">Register</a>
+      </p>
+    </main>
+  </body>
+</html>
