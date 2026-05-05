@@ -4,64 +4,126 @@
     <title>My To-Do List</title>
   </head>
   <style>
-    .toggle-button, .delete-button {
-      display: inline-block;
-      height: 36px;
-      line-height: 32px;
-      padding: 0 10px;
-      margin-left: 8px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
+    html,
+    body {
+      margin: 0;
+      min-height: 100vh;
+      height: 100%;
+    }
+
+    body {
+      background: #dce8f3;
+      color: #111;
+      font-family: system-ui, sans-serif;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .content {
+      width: min(720px, 100%);
+      background: #fff;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      text-align: center;
+      font-size: 1.9rem;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    form input {
+      flex: 1 1 220px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    form button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .toggle-button,
+    .delete-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
       background: #f8f9fa;
-      color: #333;
+      color: #111;
       text-decoration: none;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .toggle-button:hover, .delete-button:hover {
+    .toggle-button:hover,
+    .delete-button:hover {
       background: #e9ecef;
-      border-color: #999;
     }
 
     .toggle-button.done {
-        background: #d4edda;
-        border-color: #28a745;
-        color: #155724;
+      background: #d4edda;
+      border-color: #28a745;
+      color: #155724;
     }
 
     .toggle-button.not-done {
-        background: #dce8f8;
-        border-color: #4a90d9;
-        color: #1a4f7a;
-    }
-
-    .toggle-button.done:hover {
-        background: #c3e6cb;
-    }
-
-    .toggle-button.not-done:hover {
-        background: #c8ddf5;
+      background: #dce8f8;
+      border-color: #4a90d9;
+      color: #1a4f7a;
     }
 
     .delete-button:hover {
       background: #ffe7e7;
     }
-
-    ul {
-      margin-left: 4px;
-      margin-top: 8px;
-      margin-bottom: 4px;
-    }
   </style>
   <body>
-    <h1>To-Do List</h1>
+    <div class="app-shell">
+      <main class="content">
+        <h1>To-Do List</h1>
 
-    <!-- CREATE form -->
-    <form method="POST" action="{% url 'todo-create' %}">
-      {% csrf_token %} {{ form.title }}
-      <button type="submit">Add</button>
-    </form>
+        <!-- CREATE form -->
+        <form method="POST" action="{% url 'todo-create' %}">
+          {% csrf_token %} {{ form.title }}
+          <button type="submit">Add</button>
+        </form>
 
     <!-- READ list -->
     <ul>
