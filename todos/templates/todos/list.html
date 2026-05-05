@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>My To-Do List</title>
+  </head>
+  <style>
+    .toggle-button, .delete-button {
+      display: inline-block;
+      height: 36px;
+      line-height: 32px;
+      padding: 0 10px;
+      margin-left: 8px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background: #f8f9fa;
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toggle-button:hover, .delete-button:hover {
+      background: #e9ecef;
+      border-color: #999;
+    }
+
+    .toggle-button.done {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+
+    .toggle-button.not-done {
+        background: #dce8f8;
+        border-color: #4a90d9;
+        color: #1a4f7a;
+    }
+
+    .toggle-button.done:hover {
+        background: #c3e6cb;
+    }
+
+    .toggle-button.not-done:hover {
+        background: #c8ddf5;
+    }
+
+    .delete-button:hover {
+      background: #ffe7e7;
+    }
+
+    ul {
+      margin-left: 4px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+  </style>
+  <body>
+    <h1>To-Do List</h1>
+
+    <!-- CREATE form -->
+    <form method="POST" action="{% url 'todo-create' %}">
+      {% csrf_token %} {{ form.title }}
+      <button type="submit">Add</button>
+    </form>
+
+    <!-- READ list -->
+    <ul>
+      {% for todo in todos %}
+      <li>
+        {{ todo.title }}
+        <!-- UPDATE -->
+
+        <a class="toggle-button {% if todo.done %}done{% else %}not-done{% endif %}" href="{% url 'todo-toggle' todo.pk %}">
+            {% if todo.done %}Done{% else %}Not Done{% endif %}
+        </a>
+
+        <!-- DELETE -->
+        <a class="delete-button" href="{% url 'todo-delete' todo.pk %}"
+          >Delete</a
+        >
+      </li>
+      {% empty %}
+      <li>No todos yet!</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
