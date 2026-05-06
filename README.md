@@ -69,3 +69,5 @@ The app is intended to demonstrate a standard Django CRUD workflow with authenti
 - The app uses the default Django SQLite database configuration.
 - Authentication is required for all todo management actions.
 - Ownership is enforced by `Todo.owner` and query filtering in views.
+- If you run this app against Supabase/PostgREST with PostgreSQL, do not expose Django internal tables through the public API.
+- See `postgres/README.md` for PostgreSQL/PostgREST hardening guidance.
