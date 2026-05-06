@@ -2,185 +2,392 @@
 <html>
   <head>
     <title>My To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
   <style>
-    html,
-    body {
-      margin: 0;
-      min-height: 100vh;
-      height: 100%;
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --done-bg: #f0fdf4;
+      --done-border: #86efac;
+      --done-text: #166534;
+      --undone-bg: #eef2ff;
+      --undone-border: #a5b4fc;
+      --undone-text: #4338ca;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+      --radius: 14px;
     }
 
-    body {
-      background: #dce8f3;
-      color: #111;
-      font-family: system-ui, sans-serif;
+    html, body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
     .app-shell {
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding: 32px 16px;
+      padding: 40px 16px 60px;
     }
 
     .content {
-      width: min(720px, 100%);
-      background: #fff;
-      padding: 24px;
-      border-radius: 18px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-    }
-
-    h1 {
-      margin: 0 0 20px;
-      text-align: center;
-      font-size: 1.9rem;
-    }
-
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    form input {
-      flex: 1 1 220px;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      background: #f8fafc;
-      font: inherit;
-    }
-
-    form button {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
-      background: #2563eb;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    li {
+      width: min(680px, 100%);
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 12px 0;
-      border-bottom: 1px solid #e2e8f0;
+      gap: 20px;
     }
 
-    .todo-actions {
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 32px 24px 24px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .header h1 {
+      margin: 0 0 4px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .header .meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
       display: flex;
-      gap: 8px;
       justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .todo-content {
+    .header .meta a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .header .meta a:hover { text-decoration: underline; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* ── Search ── */
+    .search-row {
       display: flex;
+      gap: 8px;
+    }
+
+    .search-row input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      font: inherit;
+      font-size: 0.9rem;
+      transition: border-color .15s;
+      outline: none;
+    }
+
+    .search-row input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Add form ── */
+    .add-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 8px;
       align-items: center;
     }
 
-    .toggle-button,
-    .delete-button {
+    .add-row input[type="text"],
+    .add-row select {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      font: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .add-row input[type="text"]:focus,
+    .add-row select:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Buttons ── */
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
+      gap: 6px;
+      padding: 10px 16px;
+      border: none;
       border-radius: 10px;
-      background: #f8f9fa;
-      color: #111;
-      text-decoration: none;
+      font: inherit;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
+      transition: filter .15s, transform .1s;
+      white-space: nowrap;
     }
 
-    .toggle-button:hover,
-    .delete-button:hover {
-      background: #e9ecef;
+    .btn:active { transform: scale(.97); }
+    .btn:hover { filter: brightness(1.07); }
+
+    .btn-primary  { background: var(--accent); color: #fff; }
+    .btn-green    { background: var(--green);  color: #fff; }
+    .btn-amber    { background: var(--amber);  color: #fff; }
+    .btn-red      { background: var(--red);    color: #fff; }
+    .btn-ghost    { background: var(--surface-2); color: var(--text); border: 1.5px solid var(--border); }
+
+    /* ── Bulk actions ── */
+    .bulk-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .toggle-button.done {
-      background: #d4edda;
-      border-color: #28a745;
-      color: #155724;
+    .bulk-bar span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-right: 4px;
     }
 
-    .toggle-button.not-done {
-      background: #dce8f8;
-      border-color: #4a90d9;
-      color: #1a4f7a;
+    /* ── Todo list ── */
+    ul.todo-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
     }
 
-    .delete-button:hover {
-      background: #ffe7e7;
+    ul.todo-list li {
+      display: grid;
+      grid-template-columns: 20px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 4px;
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+      border-radius: 8px;
+    }
+
+    ul.todo-list li:last-child { border-bottom: none; }
+    ul.todo-list li:hover { background: var(--surface-2); }
+
+    ul.todo-list li input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .todo-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .todo-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .todo-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .todo-actions-inline {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .status-btn {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1.5px solid;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: filter .15s;
+    }
+
+    .status-btn:hover { filter: brightness(.93); }
+
+    .status-btn.done {
+      background: var(--done-bg);
+      border-color: var(--done-border);
+      color: var(--done-text);
+    }
+
+    .status-btn.not-done {
+      background: var(--undone-bg);
+      border-color: var(--undone-border);
+      color: var(--undone-text);
+    }
+
+    .del-btn {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1.5px solid #fecaca;
+      background: #fff1f2;
+      color: #b91c1c;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: filter .15s;
+    }
+
+    .del-btn:hover { filter: brightness(.93); }
+
+    .empty-state {
+      width:300px;
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 500px) {
+      .add-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+      }
+      .add-row .btn { grid-column: 1 / -1; }
     }
   </style>
   <body>
     <div class="app-shell">
       <main class="content">
-        <h1>To-Do List</h1>
 
-        <p style="margin: 0 0 20px; text-align:center; color:#334155;">
-          Logged in as <strong>{{ request.user.username }}</strong>
-          • <a href="{% url 'logout' %}?next={% url 'todo-list' %}">Logout</a>
-          • <a href="?show_completed={% if show_completed %}false{% else %}true{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">{% if show_completed %}Hide{% else %}Show{% endif %} Completed</a>
-        </p>
-
-        <form method="GET" style="margin-bottom: 20px; text-align: center;">
-          <input type="text" name="q" value="{{ search_query }}" placeholder="Search todos..." style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 10px; width: 200px;" />
-          <input type="hidden" name="show_completed" value="{{ show_completed|lower }}" />
-          <button type="submit" style="padding: 8px 12px; border: none; border-radius: 10px; background: #2563eb; color: #fff;">Search</button>
-        </form>
-
-        <!-- READ list -->
-        <form method="POST" action="{% url 'todo-bulk' %}">
-          {% csrf_token %}
-          <div style="margin-bottom: 10px; text-align: left;">
-            <button type="submit" name="action" value="mark_done" style="padding: 6px 10px; border: none; border-radius: 6px; background: #10b981; color: #fff; margin-right: 5px;">Mark Done</button>
-            <button type="submit" name="action" value="mark_undone" style="padding: 6px 10px; border: none; border-radius: 6px; background: #f59e0b; color: #fff; margin-right: 5px;">Mark Undone</button>
-            <button type="submit" name="action" value="delete" style="padding: 6px 10px; border: none; border-radius: 6px; background: #ef4444; color: #fff;">Delete</button>
+        <!-- Header -->
+        <div class="header">
+          <h1>To-Do List</h1>
+          <div class="meta">
+            <span>Logged in as <strong>{{ request.user.username }}</strong></span>
+            <a href="{% url 'logout' %}?next={% url 'todo-list' %}">Logout</a>
+            <a href="?show_completed={% if show_completed %}false{% else %}true{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">
+              {% if show_completed %}Hide{% else %}Show{% endif %} Completed
+            </a>
           </div>
+        </div>
 
-          <!-- CREATE form -->
+        <!-- Search -->
+        <div class="card">
+          <div class="card-label">Search</div>
+          <form method="GET">
+            <div class="search-row">
+              <input type="text" name="q" value="{{ search_query }}" placeholder="Search todos…" />
+              <input type="hidden" name="show_completed" value="{{ show_completed|lower }}" />
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Add todo -->
+        <div class="card">
+          <div class="card-label">New Task</div>
           <form method="POST" action="{% url 'todo-create' %}">
             {% csrf_token %}
-            {{ form.title }}
-            {{ form.priority }}
-            {{ form.category }}
-            <button type="submit">Add</button>
+            <div class="add-row">
+              {{ form.title }}
+              {{ form.priority }}
+              {{ form.category }}
+              <button type="submit" class="btn btn-primary">+ Add</button>
+            </div>
           </form>
+        </div>
 
-    <ul>
-      {% for todo in todos %}
-      <li>
-        <div class="todo-actions">
-          <a class="toggle-button {% if todo.done %}done{% else %}not-done{% endif %}" href="{% url 'todo-toggle' todo.pk %}">
-              {% if todo.done %}Done{% else %}Not Done{% endif %}
-          </a>
-          <a class="delete-button" href="{% url 'todo-delete' todo.pk %}">Delete</a>
+        <!-- Todo list -->
+        <div class="card">
+          <form method="POST" action="{% url 'todo-bulk' %}">
+            {% csrf_token %}
+
+            <div class="bulk-bar" style="margin-bottom: 16px;">
+              <span>Bulk:</span>
+              <button type="submit" name="action" value="mark_done" class="btn btn-green">✓ Done</button>
+              <button type="submit" name="action" value="mark_undone" class="btn btn-amber">↩ Undone</button>
+              <button type="submit" name="action" value="delete" class="btn btn-red">✕ Delete</button>
+            </div>
+
+            <ul class="todo-list">
+              {% for todo in todos %}
+              <li>
+                <input type="checkbox" name="selected_todos" value="{{ todo.pk }}" />
+                <div class="todo-info">
+                  <span class="todo-title">{{ todo.title }}</span>
+                  <span class="todo-meta">{{ todo.get_category_display }} · {{ todo.get_priority_display }}</span>
+                </div>
+                <div class="todo-actions-inline">
+                  <a class="status-btn {% if todo.done %}done{% else %}not-done{% endif %}"
+                     href="{% url 'todo-toggle' todo.pk %}">
+                    {% if todo.done %}Done{% else %}To Do{% endif %}
+                  </a>
+                  <a class="del-btn" href="{% url 'todo-delete' todo.pk %}">Del</a>
+                </div>
+              </li>
+              {% empty %}
+              <li><div class="empty-state">No todos yet — add one above!</div></li>
+              {% endfor %}
+            </ul>
+          </form>
         </div>
-        <div class="todo-content">
-          <input type="checkbox" name="selected_todos" value="{{ todo.pk }}" style="margin-right: 10px;" />
-          <div>
-            <strong>{{ todo.title }}</strong>
-            <span style="font-size: 0.9em; color: #666;">({{ todo.get_category_display }} - {{ todo.get_priority_display }})</span>
-          </div>
-        </div>
-      </li>
-      {% empty %}
-      <li>No todos yet!</li>
-      {% endfor %}
-    </ul>
-        </form>
+
+      </main>
+    </div>
   </body>
 </html>
+
+
