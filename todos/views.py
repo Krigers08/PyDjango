@@ -5,12 +5,19 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Todo
 from .forms import TodoForm
 
-# READ — show all todos
+
 @login_required
 def todo_list(request):
+    show_completed = request.GET.get('show_completed', 'false') == 'true'
+    search_query = request.GET.get('q', '')
     todos = Todo.objects.filter(owner=request.user)
+    if not show_completed:
+        todos = todos.filter(done=False)
+    if search_query:
+        todos = todos.filter(title__icontains=search_query)
+    todos = todos.order_by('-priority', 'pk')
     form = TodoForm()
-    return render(request, 'todos/list.html', {'todos': todos, 'form': form})
+    return render(request, 'todos/list.html', {'todos': todos, 'form': form, 'show_completed': show_completed, 'search_query': search_query})
 
 
 def register(request):
@@ -28,7 +35,7 @@ def register(request):
 
     return render(request, 'registration/register.html', {'form': form})
 
-# CREATE — add a new todo
+
 @login_required
 def todo_create(request):
     if request.method == 'POST':
@@ -39,7 +46,7 @@ def todo_create(request):
             todo.save()
     return redirect('todo-list')
 
-# UPDATE — mark as done/undone
+
 @login_required
 def todo_toggle(request, pk):
     todo = get_object_or_404(Todo, pk=pk, owner=request.user)
@@ -47,9 +54,25 @@ def todo_toggle(request, pk):
     todo.save()
     return redirect('todo-list')
 
-# DELETE — remove a todo
+
 @login_required
 def todo_delete(request, pk):
     todo = get_object_or_404(Todo, pk=pk, owner=request.user)
     todo.delete()
+    return redirect('todo-list')
+
+
+@login_required
+def todo_bulk_update(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        selected_ids = request.POST.getlist('selected_todos')
+        if selected_ids:
+            todos = Todo.objects.filter(pk__in=selected_ids, owner=request.user)
+            if action == 'mark_done':
+                todos.update(done=True)
+            elif action == 'mark_undone':
+                todos.update(done=False)
+            elif action == 'delete':
+                todos.delete()
     return redirect('todo-list')

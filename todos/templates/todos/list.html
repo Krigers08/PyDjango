@@ -72,11 +72,21 @@
 
     li {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
+      flex-direction: column;
+      gap: 8px;
       padding: 12px 0;
       border-bottom: 1px solid #e2e8f0;
+    }
+
+    .todo-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .todo-content {
+      display: flex;
+      align-items: center;
     }
 
     .toggle-button,
@@ -123,34 +133,54 @@
         <p style="margin: 0 0 20px; text-align:center; color:#334155;">
           Logged in as <strong>{{ request.user.username }}</strong>
           • <a href="{% url 'logout' %}?next={% url 'todo-list' %}">Logout</a>
+          • <a href="?show_completed={% if show_completed %}false{% else %}true{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">{% if show_completed %}Hide{% else %}Show{% endif %} Completed</a>
         </p>
 
-        <!-- CREATE form -->
-        <form method="POST" action="{% url 'todo-create' %}">
-          {% csrf_token %}
-          {{ form.title }}
-          <button type="submit">Add</button>
+        <form method="GET" style="margin-bottom: 20px; text-align: center;">
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search todos..." style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 10px; width: 200px;" />
+          <input type="hidden" name="show_completed" value="{{ show_completed|lower }}" />
+          <button type="submit" style="padding: 8px 12px; border: none; border-radius: 10px; background: #2563eb; color: #fff;">Search</button>
         </form>
 
         <!-- READ list -->
+        <form method="POST" action="{% url 'todo-bulk' %}">
+          {% csrf_token %}
+          <div style="margin-bottom: 10px; text-align: left;">
+            <button type="submit" name="action" value="mark_done" style="padding: 6px 10px; border: none; border-radius: 6px; background: #10b981; color: #fff; margin-right: 5px;">Mark Done</button>
+            <button type="submit" name="action" value="mark_undone" style="padding: 6px 10px; border: none; border-radius: 6px; background: #f59e0b; color: #fff; margin-right: 5px;">Mark Undone</button>
+            <button type="submit" name="action" value="delete" style="padding: 6px 10px; border: none; border-radius: 6px; background: #ef4444; color: #fff;">Delete</button>
+          </div>
+
+          <!-- CREATE form -->
+          <form method="POST" action="{% url 'todo-create' %}">
+            {% csrf_token %}
+            {{ form.title }}
+            {{ form.priority }}
+            {{ form.category }}
+            <button type="submit">Add</button>
+          </form>
+
     <ul>
       {% for todo in todos %}
       <li>
-        {{ todo.title }}
-        <!-- UPDATE -->
-
-        <a class="toggle-button {% if todo.done %}done{% else %}not-done{% endif %}" href="{% url 'todo-toggle' todo.pk %}">
-            {% if todo.done %}Done{% else %}Not Done{% endif %}
-        </a>
-
-        <!-- DELETE -->
-        <a class="delete-button" href="{% url 'todo-delete' todo.pk %}"
-          >Delete</a
-        >
+        <div class="todo-actions">
+          <a class="toggle-button {% if todo.done %}done{% else %}not-done{% endif %}" href="{% url 'todo-toggle' todo.pk %}">
+              {% if todo.done %}Done{% else %}Not Done{% endif %}
+          </a>
+          <a class="delete-button" href="{% url 'todo-delete' todo.pk %}">Delete</a>
+        </div>
+        <div class="todo-content">
+          <input type="checkbox" name="selected_todos" value="{{ todo.pk }}" style="margin-right: 10px;" />
+          <div>
+            <strong>{{ todo.title }}</strong>
+            <span style="font-size: 0.9em; color: #666;">({{ todo.get_category_display }} - {{ todo.get_priority_display }})</span>
+          </div>
+        </div>
       </li>
       {% empty %}
       <li>No todos yet!</li>
       {% endfor %}
     </ul>
+        </form>
   </body>
 </html>
