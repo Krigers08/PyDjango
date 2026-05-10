@@ -34,14 +34,18 @@ The app is intended to demonstrate a standard Django CRUD workflow with authenti
 
 ## Run Instructions
 
-1. Create and activate a Python virtual environment:
+1. Ensure python3-venv is installed (on Ubuntu/Debian systems):
+   ```bash
+   sudo apt install python3-venv
+   ```
+2. Create and activate a Python virtual environment:
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate
    ```
-2. Install Django and any project dependencies if not already installed:
+3. Install Django and any project dependencies if not already installed:
    ```bash
-   pip install django
+   pip install django python-dotenv
    ```
 3. Apply database migrations:
    ```bash
@@ -66,7 +70,6 @@ The app is intended to demonstrate a standard Django CRUD workflow with authenti
 
 ## Notes
 
-- The app uses the default Django SQLite database configuration.
 - Authentication is required for all todo management actions.
 - Ownership is enforced by `Todo.owner` and query filtering in views.
 - If you run this app against Supabase/PostgREST with PostgreSQL, do not expose Django internal tables through the public API.
